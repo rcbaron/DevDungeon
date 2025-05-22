@@ -1,6 +1,8 @@
 package item.effects;
 
 import core.Entity;
+import core.components.VelocityComponent;
+import core.utils.components.MissingComponentException;
 import systems.EventScheduler;
 
 /**
@@ -36,6 +38,17 @@ public class SpeedEffect {
    * @param target The entity to which the speed effect will be applied.
    */
   public void applySpeedEffect(Entity target) {
-    throw new UnsupportedOperationException("Method not implemented.");
+      VelocityComponent vc = target.fetch(VelocityComponent.class)
+          .orElseThrow(() -> MissingComponentException.build(target, VelocityComponent.class));
+
+      // Increase Speed
+      vc.xVelocity(vc.xVelocity() + speedIncrease);
+      vc.yVelocity(vc.yVelocity() + speedIncrease);
+
+      // return after Duration
+      EVENT_SCHEDULER.scheduleAction(() -> {
+          vc.xVelocity(vc.xVelocity() - speedIncrease);
+          vc.yVelocity(vc.yVelocity() - speedIncrease);
+      }, duration * 1000L); // Annahme: Scheduler erwartet Millisekunden
   }
 }
