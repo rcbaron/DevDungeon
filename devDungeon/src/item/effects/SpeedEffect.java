@@ -42,13 +42,20 @@ public class SpeedEffect {
           .orElseThrow(() -> MissingComponentException.build(target, VelocityComponent.class));
 
       // Increase Speed
-      vc.xVelocity(vc.xVelocity() + speedIncrease);
-      vc.yVelocity(vc.yVelocity() + speedIncrease);
+      vc.xVelocity(vc.xVelocity() * speedIncrease);
+      vc.yVelocity(vc.yVelocity() * speedIncrease);
+
+      vc.currentYVelocity(vc.xVelocity());
+      vc.currentYVelocity(vc.yVelocity());
 
       // return after Duration
       EVENT_SCHEDULER.scheduleAction(() -> {
-          vc.xVelocity(vc.xVelocity() - speedIncrease);
-          vc.yVelocity(vc.yVelocity() - speedIncrease);
+          vc.xVelocity(vc.xVelocity() / speedIncrease);
+          vc.yVelocity(vc.yVelocity() / speedIncrease);
+
+          vc.currentXVelocity(vc.xVelocity());
+          vc.currentYVelocity(vc.yVelocity());
+
       }, duration * 1000L); // Annahme: Scheduler erwartet Millisekunden
   }
 }
