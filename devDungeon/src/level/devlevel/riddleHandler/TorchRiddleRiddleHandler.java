@@ -15,6 +15,8 @@ import entities.BurningFireballSkill;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
 import level.utils.ITickable;
 import level.utils.LevelUtils;
 import utils.ArrayUtils;
@@ -221,6 +223,13 @@ public class TorchRiddleRiddleHandler implements ITickable {
    * @return The sum of the values of all lit torches in the game.
    */
   private int getSumOfLitTorches() {
-    throw new UnsupportedOperationException("Not implemented yet.");
+      Stream<Entity> entityStream = Game.entityStream();
+      return entityStream
+          .map(e -> e.fetch(TorchComponent.class))
+          .filter(Optional::isPresent)
+          .map(Optional::get)
+          .filter(tc -> tc.lit() && tc.value() > 0)
+          .mapToInt(TorchComponent::value)
+          .sum();
   }
 }
